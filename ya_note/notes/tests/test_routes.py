@@ -9,6 +9,7 @@ from notes.models import Note
 
 User = get_user_model()
 
+
 class TestRoutes(TestCase):
 
     @classmethod
@@ -22,7 +23,7 @@ class TestRoutes(TestCase):
         )
         cls.auth_client = Client()
         cls.auth_client.force_login(cls.user)
-        
+
         cls.note = Note.objects.create(
             title='Заголовок',
             text='Текст',
@@ -68,8 +69,8 @@ class TestRoutes(TestCase):
         )
         for user, status in users_statuses:
             self.client.force_login(user)
-            for name, args in urls:  
-                with self.subTest(user=user, name=name):        
+            for name, args in urls:
+                with self.subTest(user=user, name=name):
                     url = reverse(name, args=args)
                     response = self.client.get(url)
                     self.assertEqual(response.status_code, status)

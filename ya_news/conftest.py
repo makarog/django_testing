@@ -11,8 +11,7 @@ User = get_user_model()
 
 
 @pytest.fixture
-# Используем встроенную фикстуру для модели пользователей django_user_model.
-def author(django_user_model):  
+def author(django_user_model):
     return django_user_model.objects.create(username='Автор')
 
 
@@ -32,7 +31,7 @@ def news():
 
 
 @pytest.fixture
-def comment(author,news):
+def comment(author, news):
     comment = Comment.objects.create(
         news=news,
         author=author,
@@ -43,7 +42,8 @@ def comment(author,news):
 
 @pytest.fixture
 def form_data():
-    return { 'text': 'Новый текст',}
+    return {'text': 'Новый текст'}
+
 
 @pytest.fixture
 def all_news():
@@ -65,7 +65,7 @@ def comment_data(news, author):
     now = timezone.now()
     for index in range(2):
         comment = Comment.objects.create(
-        news=news, author=author, text=f'Tекст {index}',
+            news=news, author=author, text=f'Tекст {index}',
         )
         comment.created = now + timedelta(days=index)
         comment.save()

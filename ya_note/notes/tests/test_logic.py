@@ -13,7 +13,7 @@ User = get_user_model()
 
 
 class TestNoteCreation(TestCase):
-    
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create(
@@ -21,11 +21,11 @@ class TestNoteCreation(TestCase):
         )
         cls.auth_client = Client()
         cls.auth_client.force_login(cls.user)
-        
+
         cls.reader = User.objects.create(username='Читатель')
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
-        
+
         cls.form_data = {
             'title': 'Новый заголовок',
             'text': 'Новый текст',
@@ -61,7 +61,12 @@ class TestNoteCreation(TestCase):
         )
         self.form_data['slug'] = note.slug
         response = self.auth_client.post(url, data=self.form_data)
-        self.assertFormError(response, 'form', 'slug', errors=(note.slug + WARNING))
+        self.assertFormError(
+            response,
+            'form',
+            'slug',
+            errors=(note.slug + WARNING)
+        )
         self.assertEqual(Note.objects.count(), 1)
 
     def test_empty_slug(self):
@@ -100,7 +105,6 @@ class TestNoteCreation(TestCase):
         response = self.reader_client.post(url, self.form_data)
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         note_from_db = Note.objects.get(id=note.id)
-        # Проверяем, что атрибуты объекта из БД равны атрибутам заметки до запроса.
         self.assertEqual(note.title, note_from_db.title)
         self.assertEqual(note.text, note_from_db.text)
         self.assertEqual(note.slug, note_from_db.slug)

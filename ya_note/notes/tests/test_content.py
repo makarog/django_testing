@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -7,6 +6,7 @@ from notes.models import Note
 
 
 User = get_user_model()
+
 
 class TestContent(TestCase):
     LIST_NOTES = reverse('notes:list')
