@@ -16,7 +16,7 @@ class TestNoteCreation(TestCase):
     NOTE_ADD_URL = reverse('notes:add')
     SUCCESS_URL = reverse('notes:success')
     LOGIN_URL = reverse('users:login')
-    
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create(
@@ -36,7 +36,10 @@ class TestNoteCreation(TestCase):
         }
 
     def test_user_can_create_note(self):
-        response = self.auth_client.post(self.NOTE_ADD_URL, data=self.form_data)
+        response = self.auth_client.post(
+            self.NOTE_ADD_URL,
+            data=self.form_data
+        )
         self.assertRedirects(response, self.SUCCESS_URL)
         self.assertEqual(Note.objects.count(), 1)
         new_note = Note.objects.get()
@@ -59,7 +62,10 @@ class TestNoteCreation(TestCase):
             slug='slug1'
         )
         self.form_data['slug'] = note.slug
-        response = self.auth_client.post(self.NOTE_ADD_URL, data=self.form_data)
+        response = self.auth_client.post(
+            self.NOTE_ADD_URL,
+            data=self.form_data
+        )
         self.assertFormError(
             response,
             'form',
@@ -70,7 +76,10 @@ class TestNoteCreation(TestCase):
 
     def test_empty_slug(self):
         self.form_data.pop('slug')
-        response = self.auth_client.post(self.NOTE_ADD_URL, data=self.form_data)
+        response = self.auth_client.post(
+            self.NOTE_ADD_URL,
+            data=self.form_data
+        )
         self.assertRedirects(response, self.SUCCESS_URL)
         self.assertEqual(Note.objects.count(), 1)
         new_note = Note.objects.get()
