@@ -9,7 +9,8 @@ User = get_user_model()
 
 
 class TestContent(TestCase):
-    LIST_NOTES = reverse('notes:list')
+    LIST_NOTES_URL = reverse('notes:list')
+    NOTE_ADD_URL = reverse('notes:add')
 
     @classmethod
     def setUpTestData(cls):
@@ -38,20 +39,17 @@ class TestContent(TestCase):
         )
 
     def test_note_on_list(self):
-        url = reverse('notes:list')
-        response = self.auth_client.get(url)
+        response = self.auth_client.get(self.LIST_NOTES_URL)
         object_list = response.context['object_list']
         self.assertIn(self.note, object_list)
 
     def test_note_on_list_any_user(self):
-        url = reverse('notes:list')
-        response = self.auth_client.get(url)
+        response = self.auth_client.get(self.LIST_NOTES_URL)
         object_list = response.context['object_list']
         self.assertNotIn(self.note_anyuser, object_list)
 
     def test_create_note_page_contains_form(self):
-        url = reverse('notes:add')
-        response = self.auth_client.get(url)
+        response = self.auth_client.get(self.NOTE_ADD_URL)
         self.assertIn('form', response.context)
 
     def test_edit_note_page_contains_form(self):

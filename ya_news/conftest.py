@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.urls import reverse
 
 from news.models import News, Comment
 
@@ -63,9 +64,37 @@ def all_news():
 @pytest.fixture
 def comment_data(news, author):
     now = timezone.now()
-    for index in range(2):
+    for index in range(5):
         comment = Comment.objects.create(
             news=news, author=author, text=f'Tекст {index}',
         )
         comment.created = now + timedelta(days=index)
         comment.save()
+
+
+@pytest.fixture
+def id_news_for_args(news):
+    return news.id,
+
+
+@pytest.fixture
+def detail_url(id_news_for_args):
+    detail_url = reverse('news:detail', args=(id_news_for_args))
+    return detail_url
+
+
+@pytest.fixture
+def id_comment_for_args(comment):
+    return comment.id,
+
+
+@pytest.fixture
+def edit_url(id_comment_for_args):
+    edit_url = reverse('news:edit', args=(id_comment_for_args))
+    return edit_url
+
+
+@pytest.fixture
+def delite_url(id_comment_for_args):
+    delite_url = reverse('news:delete', args=(id_comment_for_args))
+    return delite_url

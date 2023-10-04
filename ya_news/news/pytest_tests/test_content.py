@@ -3,6 +3,8 @@ from django.urls import reverse
 
 import pytest
 
+from news.forms import CommentForm
+
 
 HOME_URL = reverse('news:home')
 
@@ -25,21 +27,25 @@ def test_news_order(all_news, client):
 
 
 @pytest.mark.django_db
-def test_comments_order(client, comment_data, news):
-    response = client.get(reverse('news:detail', args=(news.id,)))
+def test_comments_order(client, comment_data, news, detail_url):
+    response = client.get(detail_url)
     assert 'news' in response.context
     news = response.context['news']
     all_comments = news.comment_set.all()
-    assert all_comments[0].created < all_comments[1].created
+    assert (
+        all_comments[0].created < all_comments[1].created
+        < all_comments[2].created < all_comments[3].created
+    )
 
 
 @pytest.mark.django_db
-def test_anonymous_client_has_no_form(news, client):
-    response = client.get(reverse('news:detail', args=(news.id,)))
+def test_anonymous_client_has_no_form(news, client, detail_url):
+    response = client.get(detail_url)
     assert 'form' not in response.context
 
 
 @pytest.mark.django_db
-def test_authorized_client_has_form(news, author_client):
-    response = author_client.get(reverse('news:detail', args=(news.id,)))
+def test_authorized_client_has_form(news, author_client, detail_url):
+    response = author_client.get(detail_url)
     assert 'form' in response.context
+    isinstance(response.context, CommentForm)
