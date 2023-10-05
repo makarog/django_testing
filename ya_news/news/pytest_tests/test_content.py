@@ -27,15 +27,14 @@ def test_news_order(all_news, client):
 
 
 @pytest.mark.django_db
-def test_comments_order(client, comment_data, news, detail_url):
+def test_comments_order(client, comment_create, news, detail_url):
     response = client.get(detail_url)
     assert 'news' in response.context
     news = response.context['news']
     all_comments = news.comment_set.all()
-    assert (
-        all_comments[0].created < all_comments[1].created
-        < all_comments[2].created < all_comments[3].created
-    )
+    all_dates = [comment.created for comment in all_comments]
+    sorted_dates = sorted(all_dates, reverse=True)
+    assert all_dates == sorted_dates
 
 
 @pytest.mark.django_db
@@ -48,4 +47,4 @@ def test_anonymous_client_has_no_form(news, client, detail_url):
 def test_authorized_client_has_form(news, author_client, detail_url):
     response = author_client.get(detail_url)
     assert 'form' in response.context
-    isinstance(response.context, CommentForm)
+    assert isinstance(response.context['form'], CommentForm)

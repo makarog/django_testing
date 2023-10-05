@@ -51,6 +51,7 @@ class NewsComment(
     model = News
     form_class = CommentForm
     template_name = 'news/detail.html'
+    context_object_name = 'comment_list'
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
