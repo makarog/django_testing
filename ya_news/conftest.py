@@ -75,9 +75,8 @@ def comment_data(news, author):
 @pytest.fixture
 def comment_create():
     news = News.objects.create(
-            title='Тестовая новость', text='Просто текст.'
-        )
-    detail_urls = reverse('news:detail', args=(news.id,))
+        title='Тестовая новость', text='Просто текст.'
+    )
     author = User.objects.create(username='Комментатор')
     now = timezone.now()
     for index in range(2):
@@ -85,7 +84,7 @@ def comment_create():
             news=news, author=author, text=f'Tекст {index}',
         )
         comment.created = now + timedelta(days=index)
-        comment.save() 
+        comment.save()
 
 
 @pytest.fixture
